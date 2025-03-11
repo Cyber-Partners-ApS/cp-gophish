@@ -266,8 +266,8 @@ func (s *ModelsSuite) TestMailLogGenerate(ch *check.C) {
 func (s *ModelsSuite) TestMailLogGenerateTransparencyHeaders(ch *check.C) {
 	s.config.ContactAddress = "test@test.com"
 	expectedHeaders := map[string]string{
-		"X-Mailer":          config.ServerName,
-		"X-Gophish-Contact": s.config.ContactAddress,
+		"X-Mailer":  config.ServerName,
+		"X-Contact": s.config.ContactAddress,
 	}
 	campaign := s.createCampaign(ch)
 	got := s.emailFromFirstMailLog(campaign, ch)
@@ -278,8 +278,8 @@ func (s *ModelsSuite) TestMailLogGenerateTransparencyHeaders(ch *check.C) {
 
 func (s *ModelsSuite) TestMailLogGenerateOverrideTransparencyHeaders(ch *check.C) {
 	expectedHeaders := map[string]string{
-		"X-Mailer":          "",
-		"X-Gophish-Contact": "",
+		"X-Mailer":  "",
+		"X-Contact": "",
 	}
 	smtp := SMTP{
 		Name:        "Test SMTP",
@@ -287,8 +287,8 @@ func (s *ModelsSuite) TestMailLogGenerateOverrideTransparencyHeaders(ch *check.C
 		FromAddress: "foo@example.com",
 		UserId:      1,
 		Headers: []Header{
-			Header{Key: "X-Gophish-Contact", Value: ""},
-			Header{Key: "X-Mailer", Value: ""},
+			{Key: "X-Contact", Value: ""},
+			{Key: "X-Mailer", Value: ""},
 		},
 	}
 	ch.Assert(PostSMTP(&smtp), check.Equals, nil)
@@ -342,7 +342,6 @@ func (s *ModelsSuite) TestURLTemplateRendering(ch *check.C) {
 }
 
 func (s *ModelsSuite) TestMailLogGenerateEmptySubject(ch *check.C) {
-
 	// in place of using createCampaign, we replicate its small code body
 	// here internally as we want to specify an empty subject to createCampaignDependencies
 	// campaign := s.createCampaign(ch)
@@ -361,7 +360,6 @@ func (s *ModelsSuite) TestMailLogGenerateEmptySubject(ch *check.C) {
 }
 
 func (s *ModelsSuite) TestShouldEmbedAttachment(ch *check.C) {
-
 	// Supported file extensions
 	ch.Assert(shouldEmbedAttachment(".png"), check.Equals, true)
 	ch.Assert(shouldEmbedAttachment(".jpg"), check.Equals, true)

@@ -10,7 +10,7 @@ RUN gulp
 
 
 # Build Golang binary
-FROM golang:1.15.2 AS build-golang
+FROM golang:1.24.1 AS build-golang
 
 WORKDIR /go/src/github.com/gophish/gophish
 COPY . .
@@ -23,9 +23,9 @@ FROM debian:stable-slim
 RUN useradd -m -d /opt/gophish -s /bin/bash app
 
 RUN apt-get update && \
-	apt-get install --no-install-recommends -y jq libcap2-bin ca-certificates && \
-	apt-get clean && \
-	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  apt-get install --no-install-recommends -y jq libcap2-bin ca-certificates && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 WORKDIR /opt/gophish
 COPY --from=build-golang /go/src/github.com/gophish/gophish/ ./
@@ -40,6 +40,6 @@ USER app
 RUN sed -i 's/127.0.0.1/0.0.0.0/g' config.json
 RUN touch config.json.tmp
 
-EXPOSE 3333 8080 8443 80
+EXPOSE 3333 80
 
 CMD ["./docker/run.sh"]
